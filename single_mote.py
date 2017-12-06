@@ -16,8 +16,10 @@ def message_callback(response):
         log.debug(packet_content)
 
     log.debug("Payload length: {0}".format(len(response.payload)))
-    mote_data = MoteData.make_from_bytes(response.payload)
+    mote_data = MoteData.make_from_bytes(response.source[0], response.payload)
     log.debug("=================================")
+    coapClient.stop()
 
 coapClient = HelperClient(server=(host, 5683))
 coapClient.get(path="g/bcollect", callback=message_callback)
+coapClient.stop()

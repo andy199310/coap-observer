@@ -5,7 +5,8 @@ import struct
 
 
 class MoteData:
-    def __init__(self, event_counter, event_threshold, event_threshold_last_change, packet_counter, parent_address):
+    def __init__(self, mote, event_counter, event_threshold, event_threshold_last_change, packet_counter, parent_address):
+        self.mote = mote
         self.event_counter = event_counter
         self.event_threshold = event_threshold
         self.event_threshold_last_change = event_threshold_last_change
@@ -16,7 +17,7 @@ class MoteData:
         return "ec: {0}, et: {1}, etlc: {2}, pc: {3}".format(self.event_counter, self.event_threshold, self.event_threshold_last_change, self.packet_counter)
 
     @classmethod
-    def make_from_bytes(cls, data):
+    def make_from_bytes(cls, mote, data):
         packet_format = [
             "<xx",  # start_flag
             "xx",   # alignment_padding[2]
@@ -31,6 +32,7 @@ class MoteData:
         packet_format_str = ''.join(packet_format)
         packet_item = struct.unpack(packet_format_str, data)
         mote_data = MoteData(
+            mote=mote,
             event_counter=packet_item[0],
             event_threshold=packet_item[1],
             event_threshold_last_change=packet_item[2],
