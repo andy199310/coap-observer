@@ -1,8 +1,10 @@
+import logging
+log = logging.getLogger("moteData")
+
 import struct
 
 
 class MoteData:
-
     def __init__(self, event_counter, event_threshold, event_threshold_last_change, packet_counter, parent_address):
         self.event_counter = event_counter
         self.event_threshold = event_threshold
@@ -25,7 +27,7 @@ class MoteData:
             "I",    # packet_counter
             "cc",   # parent_address
             "xx",   # end_flag[2]
-            ]
+        ]
         packet_format_str = ''.join(packet_format)
         packet_item = struct.unpack(packet_format_str, data)
         mote_data = MoteData(
