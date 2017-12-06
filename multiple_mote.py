@@ -11,5 +11,5 @@ hosts = [
 ]
 
 for host in hosts:
-    moteConnector = MoteConnector(host=host, path="g/bcollect", name=host[-4:], is_observer=True)
+    moteConnector = MoteConnector(host=host, path="g/bcollect", name=host[-4:], is_observer=False)
     moteConnector.start()
