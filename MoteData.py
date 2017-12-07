@@ -17,7 +17,17 @@ class MoteData:
         self.parent_link_rssi = parent_link_rssi
 
     def __str__(self):
-        return "ec: {0}, et: {1}, etlc: {2}, pc: {3}".format(self.event_counter, self.event_threshold, self.event_threshold_last_change, self.packet_counter)
+        output  = []
+        output += ['mote    : {0}'.format(self.mote)]
+        output += ['ec      : {0}'.format(self.event_counter)]
+        output += ['et      : {0}'.format(self.event_threshold)]
+        output += ['etlc    : {0}'.format(self.event_threshold_last_change)]
+        output += ['pc      : {0}'.format(self.packet_counter)]
+        output += ['parent  : {0}'.format(self.parent_address)]
+        output += ['rank    : {0}'.format(self.rank)]
+        output += ['p_etx   : {0}'.format(self.parent_link_etx)]
+        output += ['p_rssi  : {0}'.format(self.parent_link_rssi)]
+        return '\n'.join(output)
 
     @classmethod
     def make_from_bytes(cls, mote, data):
