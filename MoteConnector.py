@@ -24,13 +24,14 @@ class MoteConnector(threading.Thread):
         """
         :type response: coapthon.messages.response.Response
         """
-        log.debug("Got new message")
-        if log.isEnabledFor(logging.DEBUG):
-            packet_content = ":".join("{:02x}".format(ord(c)) for c in response.payload)
-            log.debug(packet_content)
-        log.debug("Payload length: {0}".format(len(response.payload)))
-        mote_data = MoteData.make_from_bytes(response.source[0], response.payload)
-        log.debug("=================================")
+        if response is not None:
+            log.debug("Got new message")
+            if log.isEnabledFor(logging.DEBUG):
+                packet_content = ":".join("{:02x}".format(ord(c)) for c in response.payload)
+                log.debug(packet_content)
+            log.debug("Payload length: {0}".format(len(response.payload)))
+            mote_data = MoteData.make_from_bytes(response.source[0], response.payload)
+            log.debug("=================================")
 
     def run(self):
         log.info("MoteConnector \"{0}\" started.".format(self.name))
@@ -40,3 +41,8 @@ class MoteConnector(threading.Thread):
         else:
             self.coap_client.get(path=self.path, callback=self.message_callback)
         return
+
+    def close(self):
+        log.info("Closing MoteConnector \"{0}\".".format(self.name))
+        if self.coap_client is not None:
+            self.coap_client.stop()
