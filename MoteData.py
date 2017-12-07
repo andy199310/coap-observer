@@ -2,22 +2,31 @@ import logging
 log = logging.getLogger("moteData")
 
 import struct
+import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime
+
+Base = declarative_base()
 
 
-class MoteData:
-    def __init__(self, mote, event_counter, event_threshold, event_threshold_last_change, packet_counter, parent_address, rank, parent_link_etx, parent_link_rssi):
-        self.mote = mote
-        self.event_counter = event_counter
-        self.event_threshold = event_threshold
-        self.event_threshold_last_change = event_threshold_last_change
-        self.packet_counter = packet_counter
-        self.parent_address = parent_address
-        self.rank = rank
-        self.parent_link_etx = parent_link_etx
-        self.parent_link_rssi = parent_link_rssi
+class MoteData(Base):
+    __tablename__ = 'mote_data'
+
+    id = Column(Integer, primary_key=True)
+    mote = Column(String(200))
+    event_counter = Column(Integer)
+    event_threshold = Column(Integer)
+    event_threshold_last_change = Column(Integer)
+    packet_counter = Column(Integer)
+    parent_address = Column(String(10))
+    rank = Column(Integer)
+    parent_link_etx = Column(Integer)
+    parent_link_rssi = Column(Integer)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
 
     def __str__(self):
-        output  = []
+        output = []
         output += ['mote    : {0}'.format(self.mote)]
         output += ['ec      : {0}'.format(self.event_counter)]
         output += ['et      : {0}'.format(self.event_threshold)]
