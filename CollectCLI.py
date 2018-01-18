@@ -14,18 +14,20 @@ from cmd import Cmd
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
 engine = create_engine('mysql+mysqlconnector://{username}:{password}@{host}/{database}'.format(username=config.get('database', 'username'),
                                                                                                password=config.get('database', 'password'),
                                                                                                host=config.get('database', 'host'),
                                                                                                database=config.get('database', 'database'),
                                                                                                ), echo=False)
-Session = sessionmaker(bind=engine)
-session = Session()
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
 
 def object_callback(mote_data):
     try:
         log.info("Got new object_callback")
         log.debug(mote_data)
+        session = Session()
         session.add(mote_data)
         session.commit()
     except:
@@ -82,7 +84,6 @@ class CollectCLI(Cmd):
         for mote_connector in self.mote_connector_lists:
             log.info("Closing {0}!".format(mote_connector.getName()))
             mote_connector.close()
-            self.mote_connector_lists.remove(mote_connector)
         return True
 
 if __name__=="__main__":
