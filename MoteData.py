@@ -14,6 +14,8 @@ class MoteData(Base):
 
     id = Column(Integer, primary_key=True)
     mote = Column(String(200))
+    start_asn = Column(Integer)
+    end_asn = Column(Integer)
     event_counter = Column(Integer)
     event_threshold = Column(Integer)
     event_threshold_last_change = Column(Integer)
@@ -28,6 +30,8 @@ class MoteData(Base):
     def __str__(self):
         output = []
         output += ['mote    : {0}'.format(self.mote)]
+        output += ['startAsn: {0}'.format(self.start_asn)]
+        output += ['endAsn  : {0}'.format(self.end_asn)]
         output += ['ec      : {0}'.format(self.event_counter)]
         output += ['et      : {0}'.format(self.event_threshold)]
         output += ['etlc    : {0}'.format(self.event_threshold_last_change)]
@@ -43,6 +47,8 @@ class MoteData(Base):
         packet_format = [
             "<xx",  # start_flag
             "xx",   # alignment_padding[2]
+            "I",    # start_asn
+            "I",    # end_asn
             "I",    # event_counter
             "B",    # event_threshold
             "xxx",  # alignment_padding[3]
@@ -59,13 +65,15 @@ class MoteData(Base):
         packet_item = struct.unpack(packet_format_str, data)
         mote_data = MoteData(
             mote=mote,
-            event_counter=packet_item[0],
-            event_threshold=packet_item[1],
-            event_threshold_last_change=packet_item[2],
-            packet_counter=packet_item[3],
-            parent_address="".join("{:02x}".format(ord(c)) for c in packet_item[4:6]),
-            rank=packet_item[6],
-            parent_link_etx=packet_item[7],
-            parent_link_rssi=packet_item[8],
+            start_asn=packet_item[0],
+            end_asn=packet_item[1],
+            event_counter=packet_item[2],
+            event_threshold=packet_item[3],
+            event_threshold_last_change=packet_item[4],
+            packet_counter=packet_item[5],
+            parent_address="".join("{:02x}".format(ord(c)) for c in packet_item[6:8]),
+            rank=packet_item[8],
+            parent_link_etx=packet_item[9],
+            parent_link_rssi=packet_item[10],
         )
         return mote_data
